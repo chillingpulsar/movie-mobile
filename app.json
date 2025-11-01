@@ -1,0 +1,49 @@
+{
+    "expo": {
+        "name": "movie",
+        "slug": "movie",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/images/icons/logo.png",
+        "scheme": "movie",
+        "userInterfaceStyle": "automatic",
+        "newArchEnabled": true,
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "backgroundColor": "#E6F4FE",
+                "foregroundImage": "./assets/images/icons/logo.png",
+                "backgroundImage": "./assets/images/icons/logo.png",
+                "monochromeImage": "./assets/images/icons/logo.png"
+            },
+            "edgeToEdgeEnabled": true,
+            "predictiveBackGestureEnabled": false
+        },
+        "web": {
+            "output": "static",
+            "favicon": "./assets/images/icons/logo.png",
+            "bundler": "metro"
+        },
+        "plugins": [
+            "expo-router",
+            [
+                "expo-splash-screen",
+                {
+                    "image": "./assets/images/icons/logo.png",
+                    "imageWidth": 200,
+                    "resizeMode": "contain",
+                    "backgroundColor": "#ffffff",
+                    "dark": {
+                        "backgroundColor": "#000000"
+                    }
+                }
+            ]
+        ],
+        "experiments": {
+            "typedRoutes": true,
+            "reactCompiler": true
+        }
+    }
+}
