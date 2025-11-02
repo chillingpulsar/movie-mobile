@@ -3,13 +3,11 @@ import { useCallback, useEffect, useState } from 'react';
 const useFetch = <T>(fetchFunction: () => Promise<T>) => {
     const [data, setData] = useState<T | null>(null);
     const [error, setError] = useState<Error | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchData = useCallback(async () => {
         try {
-            setIsLoading(true);
             setError(null);
-
             const result = await fetchFunction();
             setData(result);
         } catch (err) {

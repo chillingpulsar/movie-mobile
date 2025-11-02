@@ -9,7 +9,7 @@ import React from 'react';
 import { ActivityIndicator, FlatList, Image, ScrollView, Text, View } from 'react-native';
 
 const Home = () => {
-    const { data: movies, isLoading } = useFetch(() => fetchPopularMovies({ q: 'iron man' }));
+    const { data: movies, isLoading } = useFetch(() => fetchPopularMovies({ q: '' }));
 
     return (
         <View className="flex-1 bg-primary">
