@@ -7,9 +7,21 @@ const baseSchema = {
 
 export const loginSchema = z.object(baseSchema);
 
-export const registerSchema = z.object(baseSchema).extend({
-    nickname: z.string().min(1, 'Must enter a nickname')
-});
+export const registerSchema = z
+    .object(baseSchema)
+    .extend({
+        nickname: z.string().min(1, 'Must enter a nickname'),
+        confirmPass: z.string()
+    })
+    .superRefine(({ password, confirmPass }, ctx) => {
+        if (password !== confirmPass) {
+            ctx.addIssue({
+                code: 'custom',
+                message: 'Passwords do not match',
+                path: ['confirmPass']
+            });
+        }
+    });
 
 export const forgotPassSchema = z.object({
     email: z.email('Must enter a valid email')

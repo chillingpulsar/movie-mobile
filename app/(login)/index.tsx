@@ -1,8 +1,8 @@
 import CustomButton from '@/components/custom-button';
 import TextField from '@/components/text-field';
+import { loginSchema, LoginSchema } from '@/lib/schemas/login-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { loginSchema, LoginSchema } from './schema';
 
 import { Link } from 'expo-router';
 import React from 'react';
