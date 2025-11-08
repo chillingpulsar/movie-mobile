@@ -2,23 +2,41 @@ import CustomButton from '@/components/custom-button';
 import TextField from '@/components/text-field';
 import { icons } from '@/constants/icons';
 import { forgotPassSchema, ForgotPassSchema } from '@/lib/schemas/login-schema';
+import { supabase } from '@/lib/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Image, Text, View } from 'react-native';
+import { Alert, Image, Text, View } from 'react-native';
 
 const ForgotPasswordIndex = () => {
+    //TODO: maybe replace this with otp code to email approach
     const {
         control,
         handleSubmit,
+        reset,
         formState: { errors }
     } = useForm<ForgotPassSchema>({
         resolver: zodResolver(forgotPassSchema)
     });
 
-    const onSubmit = (data: ForgotPassSchema) => {
-        console.log(data);
+    let [loader, setLoader] = useState(false);
+
+    const onSubmit = async (data: ForgotPassSchema) => {
+        setLoader(true);
+
+        const { error } = await supabase.auth.resetPasswordForEmail(data.email);
+
+        if (error) {
+            Alert.alert('Error', error.message);
+            setLoader(false);
+            return;
+        }
+
+        setLoader(false);
+        Alert.alert('Success', 'Recovery email sent successfully', [
+            { text: 'OK', onPress: () => reset() }
+        ]);
     };
 
     return (
@@ -60,6 +78,7 @@ const ForgotPasswordIndex = () => {
                 onPress={handleSubmit(onSubmit)}
                 className="w-full bg-green-500"
                 textClassName="font-semibold text-2xl"
+                loader={loader}
             />
 
             <View className="flex-col gap-2.5 items-center mt-5">
