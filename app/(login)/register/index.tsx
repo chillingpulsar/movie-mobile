@@ -2,11 +2,12 @@ import CustomButton from '@/components/custom-button';
 import TextField from '@/components/text-field';
 import { icons } from '@/constants/icons';
 import { registerSchema, RegisterSchema } from '@/lib/schemas/login-schema';
+import { supabase } from '@/lib/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'expo-router';
-import React from 'react';
+import { Link, router } from 'expo-router';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { Alert, Image, ScrollView, Text, View } from 'react-native';
 
 const RegisterIndex = () => {
     const {
@@ -23,9 +24,30 @@ const RegisterIndex = () => {
         }
     });
 
-    const onSubmit = (data: RegisterSchema) => {
-        console.log(data);
-        //TODO: Insert supabase logic here
+    let [loader, setLoader] = useState(false);
+
+    const onSubmit = async (formData: RegisterSchema) => {
+        setLoader(true);
+
+        const { error } = await supabase.auth.signUp({
+            email: formData.email,
+            password: formData.password,
+            options: {
+                data: {
+                    nickname: formData.nickname
+                }
+            }
+        });
+
+        if (error) {
+            Alert.alert('Error', error.message);
+            setLoader(false);
+            return;
+        }
+
+        setLoader(false);
+        router.dismissAll();
+        router.replace('/authenticated/(tabs)');
     };
 
     return (
@@ -165,6 +187,7 @@ const RegisterIndex = () => {
                         onPress={handleSubmit(onSubmit)}
                         className="w-full bg-green-500"
                         textClassName="font-semibold text-2xl"
+                        loader={loader}
                     />
 
                     <View className="flex-row gap-2.5 items-center mt-5">

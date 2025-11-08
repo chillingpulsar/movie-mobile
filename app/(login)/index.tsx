@@ -41,6 +41,7 @@ const LoginIndex = () => {
         }
 
         setLoader(false);
+        router.dismissAll();
         router.replace('/authenticated/(tabs)');
     };
 
