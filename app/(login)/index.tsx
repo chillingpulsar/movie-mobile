@@ -4,11 +4,13 @@ import { loginSchema, LoginSchema } from '@/lib/schemas/login-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 
-import { Link } from 'expo-router';
-import React from 'react';
+import { Link, router } from 'expo-router';
+import React, { useState } from 'react';
 
 import { icons } from '@/constants/icons';
-import { Image, Text, View } from 'react-native';
+import { supabase } from '@/lib/supabase';
+import { Alert, Image, Text, View } from 'react-native';
+
 const LoginIndex = () => {
     const {
         control,
@@ -22,9 +24,24 @@ const LoginIndex = () => {
         }
     });
 
-    const onSubmit = (data: LoginSchema) => {
-        console.log(data);
-        //TODO: Insert supabase logic here
+    let [loader, setLoader] = useState(false);
+
+    const onSubmit = async (formData: LoginSchema) => {
+        setLoader(true);
+
+        const { error } = await supabase.auth.signInWithPassword({
+            email: formData.email,
+            password: formData.password
+        });
+
+        if (error) {
+            Alert.alert('Error', error.message);
+            setLoader(false);
+            return;
+        }
+
+        setLoader(false);
+        router.replace('/authenticated/(tabs)');
     };
 
     return (
@@ -77,6 +94,7 @@ const LoginIndex = () => {
                             keyboardType="default"
                             autoCapitalize="none"
                             autoComplete="password"
+                            secureTextEntry={true}
                             autoCorrect={false}
                             onChangeText={onChange}
                             onBlur={onBlur}
@@ -94,6 +112,7 @@ const LoginIndex = () => {
                 onPress={handleSubmit(onSubmit)}
                 className="w-full bg-green-500"
                 textClassName="font-semibold text-2xl"
+                loader={loader}
             />
 
             <View className="flex-row gap-2.5 items-center mt-5">
