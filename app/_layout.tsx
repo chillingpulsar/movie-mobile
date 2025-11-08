@@ -6,9 +6,11 @@ export default function RootLayout() {
     return (
         <>
             <StatusBar hidden={true} />
-            <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="movies/[id]" options={{ headerShown: false }} />
+            <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(login)/index" />
+                <Stack.Screen name="(login)/register/index" />
+                <Stack.Screen name="(login)/forgot-password/index" />
+                <Stack.Screen name="authenticated" />
             </Stack>
         </>
     );

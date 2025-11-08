@@ -14,7 +14,10 @@ const Home = () => {
     const renderHeader = () => (
         <>
             <Image source={icons.logo} className="w-12 h-10 mt-24 mb-5 mx-auto" />
-            <SearchBar onPress={() => router.push('/search')} editable={false} />
+            <SearchBar
+                onPress={() => router.push('/authenticated/(tabs)/search')}
+                editable={false}
+            />
             <Text className="text-lg text-white font-bold mt-5 mb-3">Latest Movies</Text>
         </>
     );
