@@ -11,6 +11,8 @@ import { ActivityIndicator, FlatList, Image, Text, View } from 'react-native';
 const Home = () => {
     const { data: movies, isLoading } = useFetch(() => fetchPopularMovies({ q: '' }));
 
+    //TODO: implement most clicks saved each user search to db then computes the most clicked movies to display in the home screen via flatlist horizontally
+
     const renderHeader = () => (
         <>
             <Image source={icons.logo} className="w-12 h-10 mt-24 mb-5 mx-auto" />

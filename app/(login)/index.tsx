@@ -49,7 +49,9 @@ const LoginIndex = () => {
         <View className="flex-1 p-4 bg-primary flex-col gap-4 items-center justify-center">
             <Text className="text-4xl font-bold text-white">Login</Text>
             <Image resizeMode="contain" source={icons.logo} className="size-24" />
-
+            <Link href="/authenticated/(tabs)">
+                <Text className="text-white text-2xl underline">MOVE ME IN</Text>
+            </Link>
             <Controller
                 name="email"
                 control={control}
