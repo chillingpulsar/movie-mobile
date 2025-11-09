@@ -1,17 +1,18 @@
 import { supabase } from '@/lib/supabase';
-import { Session, User } from '@supabase/supabase-js';
+import { ExtendedUser } from '@/lib/types';
+import { Session } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
 export function useAuth() {
     const [session, setSession] = useState<Session | null>(null);
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<ExtendedUser | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Get initial session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
-            setUser(session?.user ?? null);
+            setUser((session?.user as ExtendedUser) ?? null);
             setLoading(false);
         });
 
@@ -20,7 +21,7 @@ export function useAuth() {
             data: { subscription }
         } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
-            setUser(session?.user ?? null);
+            setUser((session?.user as ExtendedUser) ?? null);
             setLoading(false);
         });
 
