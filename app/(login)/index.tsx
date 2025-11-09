@@ -4,7 +4,7 @@ import { loginSchema, LoginSchema } from '@/lib/schemas/login-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 
-import { Link, router } from 'expo-router';
+import { Link } from 'expo-router';
 import React, { useState } from 'react';
 
 import { icons } from '@/constants/icons';
@@ -41,8 +41,7 @@ const LoginIndex = () => {
         }
 
         setLoader(false);
-        router.dismissAll();
-        router.replace('/authenticated/(tabs)');
+        // Navigation is handled automatically by the auth guard in _layout.tsx
     };
 
     return (

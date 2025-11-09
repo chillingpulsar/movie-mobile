@@ -21,7 +21,7 @@ const CustomButton = ({ loader, title, className, textClassName, ...props }: Cus
             )}
         >
             {loader ? (
-                <ActivityIndicator size="large" color="#fff" />
+                <ActivityIndicator size="small" color="#fff" />
             ) : (
                 <Text
                     className={cn(

@@ -4,7 +4,7 @@ import { icons } from '@/constants/icons';
 import { registerSchema, RegisterSchema } from '@/lib/schemas/login-schema';
 import { supabase } from '@/lib/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, router } from 'expo-router';
+import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Image, ScrollView, Text, View } from 'react-native';
@@ -46,8 +46,7 @@ const RegisterIndex = () => {
         }
 
         setLoader(false);
-        router.dismissAll();
-        router.replace('/authenticated/(tabs)');
+        // Navigation is handled automatically by the auth guard in _layout.tsx
     };
 
     return (

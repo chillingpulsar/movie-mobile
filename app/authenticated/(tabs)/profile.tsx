@@ -8,7 +8,6 @@ import { useAuth } from '@/services/use-auth';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React, { useState } from 'react';
 
-import { router } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 
 //TODO: implement profile upload with rls
@@ -65,10 +64,10 @@ const LogoutButton = () => {
                 setLoader(true);
                 await supabase.auth.signOut();
                 setLoader(false);
-                router.replace('/(login)');
-                router.dismissAll();
+                // Navigation is handled automatically by the auth guard in _layout.tsx
             }}
             className="bg-accent w-full"
+            loader={loader}
         />
     );
 };
