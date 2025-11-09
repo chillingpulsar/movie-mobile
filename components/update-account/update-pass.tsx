@@ -1,10 +1,11 @@
 import { updatePassSchema, UpdatePassSchema } from '@/lib/schemas/update-account';
+import { supabase } from '@/lib/supabase';
 import { ExtendedUser } from '@/lib/types';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Modal, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, Text, TouchableOpacity, View } from 'react-native';
 import CustomButton from '../custom-button';
 import TextField from '../text-field';
 
@@ -14,8 +15,7 @@ interface Props {
 
 const UpdatePass = ({ user }: Props) => {
     const [passModalVisible, setPassModalVisible] = useState(false);
-
-    //TODO: create a clean separtion of components for email, nickname and password updates
+    const [loader, setLoader] = useState(false);
 
     const {
         control,
@@ -34,8 +34,29 @@ const UpdatePass = ({ user }: Props) => {
         setPassModalVisible(true);
     };
 
-    const onSubmit = (data: UpdatePassSchema) => {
-        console.log(data);
+    const onSubmit = async (formData: UpdatePassSchema) => {
+        setLoader(true);
+
+        const { error } = await supabase.auth.updateUser({
+            password: formData.pass
+        });
+
+        if (error) {
+            Alert.alert('Error', error.message);
+            setLoader(false);
+            return;
+        }
+
+        Alert.alert('Success', 'Password updated successfully', [
+            {
+                text: 'OK',
+                onPress: () => {
+                    setPassModalVisible(false);
+                    reset();
+                    setLoader(false);
+                }
+            }
+        ]);
     };
 
     return (
@@ -136,6 +157,7 @@ const UpdatePass = ({ user }: Props) => {
                                 title="Update"
                                 onPress={handleSubmit(onSubmit)}
                                 className="flex-1 bg-accent"
+                                loader={loader}
                             />
                         </View>
                     </View>

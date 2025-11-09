@@ -1,10 +1,11 @@
 import { updateEmailSchema, UpdateEmailSchema } from '@/lib/schemas/update-account';
+import { supabase } from '@/lib/supabase';
 import { ExtendedUser } from '@/lib/types';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Modal, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, Text, TouchableOpacity, View } from 'react-native';
 import CustomButton from '../custom-button';
 import TextField from '../text-field';
 
@@ -14,9 +15,7 @@ interface Props {
 
 const UpdateEmail = ({ user }: Props) => {
     const [emailModalVisible, setEmailModalVisible] = useState(false);
-
-    //TODO: create a clean separtion of components for email, nickname and password updates
-
+    const [loader, setLoader] = useState(false);
     const {
         control,
         handleSubmit,
@@ -33,8 +32,33 @@ const UpdateEmail = ({ user }: Props) => {
         setEmailModalVisible(true);
     };
 
-    const onSubmit = (data: UpdateEmailSchema) => {
-        console.log(data);
+    const onSubmit = async (formData: UpdateEmailSchema) => {
+        setLoader(true);
+
+        const { error } = await supabase.auth.updateUser({
+            email: formData.email
+        });
+
+        if (error) {
+            Alert.alert('Error', error.message);
+            setLoader(false);
+            return;
+        }
+
+        Alert.alert(
+            'Success',
+            `An email has been sent to your old email ${user.email} to confirm the change.`,
+            [
+                {
+                    text: 'OK',
+                    onPress: () => {
+                        setEmailModalVisible(false);
+                        reset();
+                        setLoader(false);
+                    }
+                }
+            ]
+        );
     };
 
     return (
@@ -102,6 +126,7 @@ const UpdateEmail = ({ user }: Props) => {
                                 title="Update"
                                 onPress={handleSubmit(onSubmit)}
                                 className="flex-1 bg-accent"
+                                loader={loader}
                             />
                         </View>
                     </View>

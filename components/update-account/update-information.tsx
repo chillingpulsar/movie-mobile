@@ -1,10 +1,11 @@
 import { updateInfoSchema, UpdateInfoSchema } from '@/lib/schemas/update-account';
+import { supabase } from '@/lib/supabase';
 import { ExtendedUser } from '@/lib/types';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Modal, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, Text, TouchableOpacity, View } from 'react-native';
 import CustomButton from '../custom-button';
 import TextField from '../text-field';
 
@@ -14,8 +15,7 @@ interface Props {
 
 const UpdateInformation = ({ user }: Props) => {
     const [informationModalVisible, setInformationModalVisible] = useState(false);
-
-    //TODO: create a clean separtion of components for email, nickname and password updates
+    const [loader, setLoader] = useState(false);
 
     const {
         control,
@@ -33,8 +33,31 @@ const UpdateInformation = ({ user }: Props) => {
         setInformationModalVisible(true);
     };
 
-    const onSubmit = (data: UpdateInfoSchema) => {
-        console.log(data);
+    const onSubmit = async (formData: UpdateInfoSchema) => {
+        setLoader(true);
+
+        const { error } = await supabase.auth.updateUser({
+            data: {
+                nickname: formData.nickname
+            }
+        });
+
+        if (error) {
+            Alert.alert('Error', error.message);
+            setLoader(false);
+            return;
+        }
+
+        Alert.alert('Success', 'Nickname updated successfully', [
+            {
+                text: 'OK',
+                onPress: () => {
+                    setInformationModalVisible(false);
+                    reset();
+                    setLoader(false);
+                }
+            }
+        ]);
     };
 
     return (
@@ -106,6 +129,7 @@ const UpdateInformation = ({ user }: Props) => {
                                 title="Update"
                                 onPress={handleSubmit(onSubmit)}
                                 className="flex-1 bg-accent"
+                                loader={loader}
                             />
                         </View>
                     </View>
