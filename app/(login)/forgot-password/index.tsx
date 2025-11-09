@@ -41,7 +41,7 @@ const ForgotPasswordIndex = () => {
 
     return (
         <View className="flex-1 items-center justify-center p-4 bg-primary flex-col gap-4">
-            <Text className="text-4xl font-bold text-white">Forgot Password</Text>
+            <Text className="text-4xl font-sans-bold text-white">Forgot Password</Text>
             <Image resizeMode="contain" source={icons.logo} className="size-24" />
 
             <Controller
@@ -50,7 +50,7 @@ const ForgotPasswordIndex = () => {
                 render={({ field: { onChange, onBlur, value } }) => (
                     <View className="flex-col gap-2.5 w-full">
                         <Text
-                            className={`text-2xl ${errors.email ? 'text-red-500' : 'text-white'}`}
+                            className={`text-xl font-sans-regular ${errors.email ? 'text-red-500' : 'text-white'}`}
                         >
                             Email
                         </Text>
@@ -67,7 +67,9 @@ const ForgotPasswordIndex = () => {
                             value={value}
                         />
                         {errors.email && (
-                            <Text className="text-red-500 text-2xl">{errors.email.message}</Text>
+                            <Text className="text-red-500 text-xl font-sans-regular">
+                                {errors.email.message}
+                            </Text>
                         )}
                     </View>
                 )}
@@ -76,14 +78,15 @@ const ForgotPasswordIndex = () => {
             <CustomButton
                 title="Send recovery email"
                 onPress={handleSubmit(onSubmit)}
-                className="w-full bg-green-500"
-                textClassName="font-semibold text-2xl"
+                className="w-full "
                 loader={loader}
             />
 
             <View className="flex-col gap-2.5 items-center mt-5">
-                <Text className="text-white text-2xl">Already recovered your password?</Text>
-                <Link href="/(login)" className="text-accent text-2xl underline">
+                <Text className="text-white text-xl font-sans-regular">
+                    Already recovered your password?
+                </Text>
+                <Link href="/(login)" className="text-accent text-xl font-sans-regular underline">
                     Login here
                 </Link>
             </View>

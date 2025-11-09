@@ -63,7 +63,7 @@ const Search = () => {
                         )}
 
                         {!isLoading && !error && searchQuery.trim() && movies?.length > 0 && (
-                            <Text className="text-xl text-white font-bold">
+                            <Text className="text-xl text-white font-sans-bold">
                                 Search results for:{' '}
                                 <Text className="text-accent">{searchQuery}</Text>
                             </Text>

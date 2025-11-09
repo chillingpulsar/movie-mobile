@@ -18,6 +18,16 @@ module.exports = {
                     200: '#0F0D23'
                 },
                 accent: '#AB8BFF'
+            },
+            fontFamily: {
+                sans: ['IBMPlexSans-Regular', 'system-ui', 'sans-serif'],
+                'sans-thin': ['IBMPlexSans-Thin', 'system-ui', 'sans-serif'],
+                'sans-extralight': ['IBMPlexSans-ExtraLight', 'system-ui', 'sans-serif'],
+                'sans-light': ['IBMPlexSans-Light', 'system-ui', 'sans-serif'],
+                'sans-regular': ['IBMPlexSans-Regular', 'system-ui', 'sans-serif'],
+                'sans-medium': ['IBMPlexSans-Medium', 'system-ui', 'sans-serif'],
+                'sans-semibold': ['IBMPlexSans-SemiBold', 'system-ui', 'sans-serif'],
+                'sans-bold': ['IBMPlexSans-Bold', 'system-ui', 'sans-serif']
             }
         }
     },

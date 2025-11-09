@@ -1,9 +1,10 @@
+import CustomButton from '@/components/custom-button';
 import { icons } from '@/constants/icons';
 import { fetchMovieDetails } from '@/services/api';
 import useFetch from '@/services/use-fetch';
 import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, ScrollView, Text, View } from 'react-native';
 
 interface MovieInfoProps {
     label: string;
@@ -13,8 +14,10 @@ interface MovieInfoProps {
 const MovieInfo = ({ label, value }: MovieInfoProps) => {
     return (
         <View className="flex-col items-start justify-center m-5">
-            <Text className="text-light-200 font-normal text-sm">{label}</Text>
-            <Text className="text-light-200 font-normal text-sm mt-1">{value || 'N/A'}</Text>
+            <Text className="text-light-200 font-sans-regular text-base">{label}</Text>
+            <Text className="text-light-200 font-sans-regular text-base mt-1">
+                {value || 'N/A'}
+            </Text>
         </View>
     );
 };
@@ -45,25 +48,25 @@ const MovieDetails = () => {
                         </View>
 
                         <View className="flex-col items-start justify-center mt-5 px-5">
-                            <Text className="text-white font-bold text-xl">
+                            <Text className="text-white font-sans-bold text-2xl">
                                 {movieDetails?.title}
                             </Text>
                             <View className="flex-row items-center gap-x-1 mt-2">
-                                <Text className="text-light-200 text-sm">
+                                <Text className="text-light-200 font-sans-regular text-base">
                                     {movieDetails?.release_date.split('-')[0]}
                                 </Text>
-                                <Text className="text-light-200 text-sm">
+                                <Text className="text-light-200 font-sans-regular text-base">
                                     {movieDetails?.runtime}m
                                 </Text>
                             </View>
 
                             <View className="flex-row items-center bg-dark-100 px-2 py-1 rounded-md gap-x-1 mt-2">
                                 <Image source={icons.star} className="size-4" />
-                                <Text className="text-light-200 text-sm">
-                                    {Math.round(movieDetails?.vote_average ?? 0)}/10
+                                <Text className="text-light-200 font-sans-regular text-base">
+                                    {Math.round(movieDetails?.vote_average ?? 0)} / 10
                                 </Text>
-                                <Text className="text-light-200 text-sm">
-                                    ({movieDetails?.vote_count} Votes)
+                                <Text className="text-light-200 font-sans-regular text-base">
+                                    ( {movieDetails?.vote_count} Votes )
                                 </Text>
                             </View>
                         </View>
@@ -90,17 +93,13 @@ const MovieDetails = () => {
                                 .join(', ')}
                         />
                     </ScrollView>
-                    <TouchableOpacity
+
+                    <CustomButton
+                        title="Back"
                         onPress={() => router.back()}
-                        className="absolute bottom-5 left-0 right-0 mx-5 bg-accent rounded-lg py-3.5 flex flex-row items-center justify-center z-50"
-                    >
-                        <Image
-                            source={icons.arrow}
-                            className="size-5 mr-1 mt-0.5 rotate-180"
-                            tintColor="#FFF"
-                        />
-                        <Text className="text-white font-semibold text-base">Go Back</Text>
-                    </TouchableOpacity>
+                        className="absolute bottom-8 left-0 right-0 mx-5"
+                        textClassName="text-white"
+                    />
                 </>
             )}
         </View>

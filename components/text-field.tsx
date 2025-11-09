@@ -18,7 +18,7 @@ const TextField = ({
             {...props}
             placeholderTextColor="#A8B5DB"
             className={cn(
-                'border border-gray-300 text-white rounded-lg text-2xl w-full h-20 px-4',
+                'border border-gray-300 text-white rounded-xl text-lg w-full h-16 px-4',
                 className
             )}
         />

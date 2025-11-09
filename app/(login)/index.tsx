@@ -47,18 +47,16 @@ const LoginIndex = () => {
 
     return (
         <View className="flex-1 p-4 bg-primary flex-col gap-4 items-center justify-center">
-            <Text className="text-4xl font-bold text-white">Login</Text>
+            <Text className="text-4xl font-sans-bold text-white">Login</Text>
             <Image resizeMode="contain" source={icons.logo} className="size-24" />
-            <Link href="/authenticated/(tabs)">
-                <Text className="text-white text-2xl underline">MOVE ME IN</Text>
-            </Link>
+
             <Controller
                 name="email"
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <View className="flex-col gap-2.5 w-full">
                         <Text
-                            className={`text-2xl ${errors.email ? 'text-red-500' : 'text-white'}`}
+                            className={`text-xl font-sans-regular ${errors.email ? 'text-red-500' : 'text-white'}`}
                         >
                             Email
                         </Text>
@@ -75,7 +73,9 @@ const LoginIndex = () => {
                             value={value}
                         />
                         {errors.email && (
-                            <Text className="text-red-500 text-2xl">{errors.email.message}</Text>
+                            <Text className="text-red-500 text-xl font-sans-regular">
+                                {errors.email.message}
+                            </Text>
                         )}
                     </View>
                 )}
@@ -87,7 +87,7 @@ const LoginIndex = () => {
                 render={({ field: { onChange, onBlur, value } }) => (
                     <View className="flex-col gap-2.5 w-full">
                         <Text
-                            className={`text-2xl ${errors.password ? 'text-red-500' : 'text-white'}`}
+                            className={`text-xl font-sans-regular ${errors.password ? 'text-red-500' : 'text-white'}`}
                         >
                             Password
                         </Text>
@@ -105,7 +105,9 @@ const LoginIndex = () => {
                         />
 
                         {errors.password && (
-                            <Text className="text-red-500 text-2xl">{errors.password.message}</Text>
+                            <Text className="text-red-500 text-xl font-sans-regular">
+                                {errors.password.message}
+                            </Text>
                         )}
                     </View>
                 )}
@@ -113,19 +115,23 @@ const LoginIndex = () => {
             <CustomButton
                 title="Log in"
                 onPress={handleSubmit(onSubmit)}
-                className="w-full bg-green-500"
-                textClassName="font-semibold text-2xl"
+                className="w-full "
                 loader={loader}
             />
 
             <View className="flex-row gap-2.5 items-center mt-5">
-                <Text className="text-white text-2xl">Don&apos;t have an account?</Text>
-                <Link href="/(login)/register" className="text-accent text-2xl underline">
+                <Link
+                    href="/(login)/register"
+                    className="text-accent text-xl font-sans-regular underline"
+                >
                     Register here
                 </Link>
             </View>
 
-            <Link href="/(login)/forgot-password" className="text-accent mt-4 text-2xl underline">
+            <Link
+                href="/(login)/forgot-password"
+                className="text-accent mt-4 text-xl font-sans-regular underline"
+            >
                 Forgot password?
             </Link>
         </View>

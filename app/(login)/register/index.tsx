@@ -57,7 +57,7 @@ const RegisterIndex = () => {
                 className="flex-1"
             >
                 <View className="flex-1 flex-col gap-4 items-center justify-center p-4 ">
-                    <Text className="text-4xl font-bold text-white">Create Account</Text>
+                    <Text className="text-4xl font-sans-bold text-white">Create Account</Text>
                     <Image resizeMode="contain" source={icons.logo} className="size-24" />
 
                     <Controller
@@ -66,7 +66,7 @@ const RegisterIndex = () => {
                         render={({ field: { onChange, onBlur, value } }) => (
                             <View className="flex-col gap-2.5 w-full">
                                 <Text
-                                    className={`text-2xl ${errors.nickname ? 'text-red-500' : 'text-white'}`}
+                                    className={`text-xl font-sans-regular ${errors.nickname ? 'text-red-500' : 'text-white'}`}
                                 >
                                     Nickname
                                 </Text>
@@ -82,7 +82,7 @@ const RegisterIndex = () => {
                                     value={value}
                                 />
                                 {errors.nickname && (
-                                    <Text className="text-red-500 text-2xl">
+                                    <Text className="text-red-500 text-xl font-sans-regular">
                                         {errors.nickname.message}
                                     </Text>
                                 )}
@@ -96,7 +96,7 @@ const RegisterIndex = () => {
                         render={({ field: { onChange, onBlur, value } }) => (
                             <View className="flex-col gap-2.5 w-full">
                                 <Text
-                                    className={`text-2xl ${errors.email ? 'text-red-500' : 'text-white'}`}
+                                    className={`text-xl font-sans-regular ${errors.email ? 'text-red-500' : 'text-white'}`}
                                 >
                                     Email
                                 </Text>
@@ -112,7 +112,7 @@ const RegisterIndex = () => {
                                     value={value}
                                 />
                                 {errors.email && (
-                                    <Text className="text-red-500 text-2xl">
+                                    <Text className="text-red-500 text-xl font-sans-regular">
                                         {errors.email.message}
                                     </Text>
                                 )}
@@ -126,7 +126,7 @@ const RegisterIndex = () => {
                         render={({ field: { onChange, onBlur, value } }) => (
                             <View className="flex-col gap-2.5 w-full">
                                 <Text
-                                    className={`text-2xl ${errors.password ? 'text-red-500' : 'text-white'}`}
+                                    className={`text-xl font-sans-regular ${errors.password ? 'text-red-500' : 'text-white'}`}
                                 >
                                     Password
                                 </Text>
@@ -143,7 +143,7 @@ const RegisterIndex = () => {
                                     value={value}
                                 />
                                 {errors.password && (
-                                    <Text className="text-red-500 text-2xl">
+                                    <Text className="text-red-500 text-xl font-sans-regular">
                                         {errors.password.message}
                                     </Text>
                                 )}
@@ -157,7 +157,7 @@ const RegisterIndex = () => {
                         render={({ field: { onChange, onBlur, value } }) => (
                             <View className="flex-col gap-2.5 w-full">
                                 <Text
-                                    className={`text-2xl ${errors.confirmPass ? 'text-red-500' : 'text-white'}`}
+                                    className={`text-xl font-sans-regular ${errors.confirmPass ? 'text-red-500' : 'text-white'}`}
                                 >
                                     Confirm Password
                                 </Text>
@@ -174,7 +174,7 @@ const RegisterIndex = () => {
                                     value={value}
                                 />
                                 {errors.confirmPass && (
-                                    <Text className="text-red-500 text-2xl">
+                                    <Text className="text-red-500 text-xl font-sans-regular">
                                         {errors.confirmPass.message}
                                     </Text>
                                 )}
@@ -185,14 +185,18 @@ const RegisterIndex = () => {
                     <CustomButton
                         title="Create Account"
                         onPress={handleSubmit(onSubmit)}
-                        className="w-full bg-green-500"
-                        textClassName="font-semibold text-2xl"
+                        className="w-full "
                         loader={loader}
                     />
 
                     <View className="flex-row gap-2.5 items-center mt-5">
-                        <Text className="text-white text-2xl">Already have an account?</Text>
-                        <Link href="/(login)" className="text-accent text-2xl underline">
+                        <Text className="text-white text-xl font-sans-regular">
+                            Already have an account?
+                        </Text>
+                        <Link
+                            href="/(login)"
+                            className="text-accent text-xl font-sans-regular underline"
+                        >
                             Login here
                         </Link>
                     </View>

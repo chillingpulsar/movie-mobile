@@ -20,7 +20,7 @@ const Home = () => {
                 onPress={() => router.push('/authenticated/(tabs)/search')}
                 editable={false}
             />
-            <Text className="text-lg text-white font-bold mt-5 mb-3">Latest Movies</Text>
+            <Text className="text-2xl text-white font-sans-bold mt-5 mb-3">Latest Movies</Text>
         </>
     );
 

@@ -15,7 +15,7 @@ const CustomButton = ({ loader, title, className, textClassName, ...props }: Cus
             disabled={loader}
             {...props}
             className={cn(
-                'bg-primary h-20 flex items-center justify-center px-4 rounded-lg',
+                'bg-accent h-16 flex items-center justify-center px-4 rounded-lg',
                 loader ? 'opacity-50' : 'opacity-100',
                 className
             )}
@@ -23,7 +23,14 @@ const CustomButton = ({ loader, title, className, textClassName, ...props }: Cus
             {loader ? (
                 <ActivityIndicator size="large" color="#fff" />
             ) : (
-                <Text className={cn('text-white text-center', textClassName)}>{title}</Text>
+                <Text
+                    className={cn(
+                        'text-primary font-sans-semibold text-center text-xl',
+                        textClassName
+                    )}
+                >
+                    {title}
+                </Text>
             )}
         </TouchableOpacity>
     );
