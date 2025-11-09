@@ -2,34 +2,14 @@ import CustomButton from '@/components/custom-button';
 import UpdateEmail from '@/components/update-account/update-email';
 import UpdateInformation from '@/components/update-account/update-information';
 import UpdatePass from '@/components/update-account/update-pass';
+import UploadProfile from '@/components/update-account/upload-profile';
 import { supabase } from '@/lib/supabase';
 import { ExtendedUser } from '@/lib/types';
 import { useAuth } from '@/services/use-auth';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+
 import React, { useState } from 'react';
 
 import { ScrollView, Text, View } from 'react-native';
-
-//TODO: implement profile upload with rls
-const UserUpload = ({ user }: { user: ExtendedUser | null }) => {
-    const avatarUrl = user?.user_metadata.avatar_url;
-
-    if (!user) {
-        return <></>;
-    }
-
-    return avatarUrl ? (
-        <View>{/* TODO: display avatar implement async avatar display */}</View>
-    ) : (
-        <View className="flex flex-col items-center justify-center gap-2.5">
-            <FontAwesome name="user-circle" size={120} color="white" />
-            <Text className="text-white text-2xl font-sans-bold  w-full">
-                {user.user_metadata.nickname}
-            </Text>
-            <Text className="text-base text-gray-500 font-sans-regular  w-full">{user?.email}</Text>
-        </View>
-    );
-};
 
 const UserInfo = ({ user }: { user: ExtendedUser | null }) => {
     if (!user) {
@@ -74,6 +54,7 @@ const LogoutButton = () => {
 
 const Profile = () => {
     const { user } = useAuth();
+
     return (
         <View className="flex-1 bg-primary">
             <ScrollView
@@ -81,9 +62,13 @@ const Profile = () => {
                 className="flex-1"
             >
                 <View className="bg-grey-500 items-center justify-center p-4 flex flex-col gap-4">
-                    <UserUpload user={user} />
-                    <UserInfo user={user} />
-                    <LogoutButton />
+                    {user && (
+                        <>
+                            <UploadProfile user={user} />
+                            <UserInfo user={user} />
+                            <LogoutButton />
+                        </>
+                    )}
                 </View>
             </ScrollView>
         </View>
