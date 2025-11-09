@@ -1,4 +1,6 @@
+import { supabase } from '@/lib/supabase';
 import { ExtendedUser } from '@/lib/types';
+import { uploadFiles } from '@/services/tus';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import * as ImagePicker from 'expo-image-picker';
@@ -8,12 +10,13 @@ import { Alert, Image, Modal, Platform, Text, TouchableOpacity, View } from 'rea
 import CustomButton from '../custom-button';
 
 const UploadProfile = ({ user }: { user: ExtendedUser }) => {
-    const [image, setImage] = useState<string | null>(null);
+    const [imageAsset, setImageAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
     const [mediaLibraryStatus, requestMediaLibraryPermission] =
         ImagePicker.useMediaLibraryPermissions();
     const [cameraStatus, requestCameraPermission] = ImagePicker.useCameraPermissions();
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     const pickImageFromLibrary = async () => {
         try {
@@ -61,7 +64,7 @@ const UploadProfile = ({ user }: { user: ExtendedUser }) => {
             });
 
             if (!result.canceled && result.assets && result.assets[0]) {
-                setImage(result.assets[0].uri);
+                setImageAsset(result.assets[0]);
             }
         } catch (error) {
             console.error('Error picking image from library:', error);
@@ -116,7 +119,7 @@ const UploadProfile = ({ user }: { user: ExtendedUser }) => {
             });
 
             if (!result.canceled && result.assets && result.assets[0]) {
-                setImage(result.assets[0].uri);
+                setImageAsset(result.assets[0]);
             }
         } catch (error) {
             console.error('Error taking photo:', error);
@@ -153,9 +156,9 @@ const UploadProfile = ({ user }: { user: ExtendedUser }) => {
                 activeOpacity={0.7}
                 className="relative rounded-full"
             >
-                {image ? (
+                {imageAsset?.uri ? (
                     <Image
-                        source={{ uri: image }}
+                        source={{ uri: imageAsset.uri }}
                         className="w-32 h-32 rounded-full border-4 border-accent"
                         resizeMode="cover"
                     />
@@ -198,9 +201,9 @@ const UploadProfile = ({ user }: { user: ExtendedUser }) => {
                             onPress={showImagePickerOptions}
                             className="p-2 size-64 mx-auto flex items-center justify-center flex-col rounded-full"
                         >
-                            {image ? (
+                            {imageAsset?.uri ? (
                                 <Image
-                                    source={{ uri: image }}
+                                    source={{ uri: imageAsset.uri }}
                                     className="size-60 rounded-full border-4 border-accent"
                                     resizeMode="cover"
                                 />
@@ -220,14 +223,59 @@ const UploadProfile = ({ user }: { user: ExtendedUser }) => {
                             />
                             <CustomButton
                                 title="Update"
-                                disabled={!image}
-                                onPress={() => {
-                                    // TODO: Implement upload to Supabase storage
-                                    console.log(image);
-                                    Alert.alert(
-                                        'Success',
-                                        'Profile picture selected! Upload functionality can be implemented here.'
-                                    );
+                                disabled={!imageAsset?.uri || uploading}
+                                loader={uploading}
+                                onPress={async () => {
+                                    if (!imageAsset?.uri) return;
+
+                                    try {
+                                        setUploading(true);
+
+                                        // Get user's access token from Supabase session
+                                        const {
+                                            data: { session }
+                                        } = await supabase.auth.getSession();
+
+                                        if (!session?.access_token) {
+                                            throw new Error(
+                                                'No access token found. Please log in again.'
+                                            );
+                                        }
+
+                                        // Create ImagePickerResult format that uploadFiles expects
+                                        const pickerResult: ImagePicker.ImagePickerResult = {
+                                            canceled: false,
+                                            assets: [imageAsset]
+                                        };
+
+                                        // Get file extension from asset
+                                        const extension =
+                                            imageAsset.fileName?.split('.').pop() || 'jpg';
+                                        const filepath = `${user.id}/profile-picture.${extension}`;
+
+                                        await uploadFiles(
+                                            'movie-storage',
+                                            filepath,
+                                            pickerResult,
+                                            session.access_token
+                                        );
+
+                                        Alert.alert(
+                                            'Success',
+                                            'Profile picture uploaded successfully!'
+                                        );
+                                        setModalVisible(false);
+                                    } catch (error) {
+                                        console.error('Upload error:', error);
+                                        Alert.alert(
+                                            'Error',
+                                            error instanceof Error
+                                                ? error.message
+                                                : 'Failed to upload profile picture. Please try again.'
+                                        );
+                                    } finally {
+                                        setUploading(false);
+                                    }
                                 }}
                                 className="flex-1 bg-accent"
                             />
