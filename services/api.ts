@@ -118,3 +118,24 @@ export const getSavedMovies = async ({ userId }: { userId: string }) => {
 
     return { errorMsg: null, data };
 };
+
+//all about profile
+
+export const getSignedProfileUrl = async ({
+    filepath,
+    expiresIn = 60 * 60 * 24 // 24 hours
+}: {
+    filepath: string;
+    expiresIn?: number;
+}) => {
+    const { data, error } = await supabase.storage
+        .from('movie-storage')
+        .createSignedUrl(filepath, expiresIn);
+
+    if (error) {
+        console.log(error.message);
+        return { errorMsg: error.message, url: null };
+    }
+
+    return { errorMsg: null, url: data.signedUrl };
+};

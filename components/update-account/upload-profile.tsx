@@ -1,11 +1,12 @@
 import { supabase } from '@/lib/supabase';
 import { ExtendedUser } from '@/lib/types';
+import { getSignedProfileUrl } from '@/services/api';
 import { uploadFiles } from '@/services/tus';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import * as ImagePicker from 'expo-image-picker';
 import * as Linking from 'expo-linking';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Image, Modal, Platform, Text, TouchableOpacity, View } from 'react-native';
 import CustomButton from '../custom-button';
 
@@ -149,6 +150,29 @@ const UploadProfile = ({ user }: { user: ExtendedUser }) => {
         );
     };
 
+    const getSignedURL = useCallback(async () => {
+        if (!user) return;
+
+        const { errorMsg, url } = await getSignedProfileUrl({
+            filepath: `${user.id}/profile-picture`
+        });
+
+        if (errorMsg) {
+            console.log(errorMsg);
+            return;
+        }
+
+        return url;
+    }, [user]);
+
+    useEffect(() => {
+        getSignedURL().then((url) => {
+            if (url) {
+                setImageAsset({ uri: url, width: 100, height: 100 });
+            }
+        });
+    }, [getSignedURL]);
+
     return (
         <View className="flex flex-col items-center justify-center gap-4">
             <TouchableOpacity
@@ -248,10 +272,7 @@ const UploadProfile = ({ user }: { user: ExtendedUser }) => {
                                             assets: [imageAsset]
                                         };
 
-                                        // Get file extension from asset
-                                        const extension =
-                                            imageAsset.fileName?.split('.').pop() || 'jpg';
-                                        const filepath = `${user.id}/profile-picture.${extension}`;
+                                        const filepath = `${user.id}/profile-picture`;
 
                                         await uploadFiles(
                                             'movie-storage',
