@@ -44,11 +44,15 @@ export default function RootLayout() {
 
         const inAuthGroup = segments[0] === 'authenticated';
 
+        console.log('isAuthenticated', isAuthenticated);
+
         if (!isAuthenticated && inAuthGroup) {
             // User is not authenticated but trying to access protected route
+
             router.replace('/(login)');
         } else if (isAuthenticated && !inAuthGroup) {
             // User is authenticated but trying to access login route
+
             router.replace('/authenticated/(tabs)');
         }
     }, [router, isAuthenticated, loading, segments, fontsLoaded]);
