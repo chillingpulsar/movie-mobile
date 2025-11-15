@@ -1,0 +1,78 @@
+import CustomButton from '@/components/custom-button';
+import UpdateEmail from '@/components/update-account/update-email';
+import UpdateInformation from '@/components/update-account/update-information';
+import UpdatePass from '@/components/update-account/update-pass';
+import UploadProfile from '@/components/update-account/upload-profile';
+import { supabase } from '@/lib/supabase';
+import { ExtendedUser } from '@/lib/types';
+import { useAuth } from '@/services/use-auth';
+
+import React, { useState } from 'react';
+
+import { ScrollView, Text, View } from 'react-native';
+
+const UserInfo = ({ user }: { user: ExtendedUser | null }) => {
+    if (!user) {
+        return <></>;
+    }
+
+    return (
+        <View className="flex flex-col gap-2.5 w-full">
+            <Text className="text-white text-2xl font-sans-bold w-full">Account Information</Text>
+            <View className="p-4 bg-secondary rounded-lg">
+                <UpdateEmail user={user} />
+
+                <View className="h-0.5 bg-primary w-full my-4"></View>
+
+                <UpdateInformation user={user} />
+
+                <View className="h-0.5 bg-primary w-full my-4"></View>
+
+                <UpdatePass user={user} />
+            </View>
+        </View>
+    );
+};
+
+const LogoutButton = () => {
+    let [loader, setLoader] = useState(false);
+
+    return (
+        <CustomButton
+            title="Logout"
+            onPress={async () => {
+                setLoader(true);
+                await supabase.auth.signOut();
+                setLoader(false);
+                // Navigation is handled automatically by the auth guard in _layout.tsx
+            }}
+            className="bg-accent w-full"
+            loader={loader}
+        />
+    );
+};
+
+const Profile = () => {
+    const { user } = useAuth();
+
+    return (
+        <View className="flex-1 bg-primary">
+            <ScrollView
+                contentContainerStyle={{ paddingBottom: 80, paddingTop: 80 }}
+                className="flex-1"
+            >
+                <View className="bg-grey-500 items-center justify-center p-4 flex flex-col gap-4">
+                    {user && (
+                        <>
+                            <UploadProfile user={user} />
+                            <UserInfo user={user} />
+                            <LogoutButton />
+                        </>
+                    )}
+                </View>
+            </ScrollView>
+        </View>
+    );
+};
+
+export default Profile;

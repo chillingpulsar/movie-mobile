@@ -39,6 +39,14 @@
                         "backgroundColor": "#000000"
                     }
                 }
+            ],
+            [
+                "expo-image-picker",
+                {
+                    "photosPermission": "The app accesses your photos to let you set your profile picture.",
+                    "cameraPermission": "The app accesses your camera to let you take a profile picture.",
+                    "microphonePermission": "The app accesses your microphone when recording videos."
+                }
             ]
         ],
         "experiments": {

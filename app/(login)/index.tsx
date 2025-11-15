@@ -1,0 +1,140 @@
+import CustomButton from '@/components/custom-button';
+import TextField from '@/components/text-field';
+import { loginSchema, LoginSchema } from '@/lib/schemas/login-schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm } from 'react-hook-form';
+
+import { Link } from 'expo-router';
+import React, { useState } from 'react';
+
+import { icons } from '@/constants/icons';
+import { supabase } from '@/lib/supabase';
+import { Alert, Image, Text, View } from 'react-native';
+
+const LoginIndex = () => {
+    const {
+        control,
+        handleSubmit,
+        formState: { errors }
+    } = useForm<LoginSchema>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: '',
+            password: ''
+        }
+    });
+
+    let [loader, setLoader] = useState(false);
+
+    const onSubmit = async (formData: LoginSchema) => {
+        setLoader(true);
+
+        const { error } = await supabase.auth.signInWithPassword({
+            email: formData.email,
+            password: formData.password
+        });
+
+        if (error) {
+            Alert.alert('Error', error.message);
+            setLoader(false);
+            return;
+        }
+
+        setLoader(false);
+        // Navigation is handled automatically by the auth guard in _layout.tsx
+    };
+
+    return (
+        <View className="flex-1 p-4 bg-primary flex-col gap-4 items-center justify-center">
+            <Text className="text-4xl font-sans-bold text-white">Login</Text>
+            <Image resizeMode="contain" source={icons.logo} className="size-24" />
+
+            <Controller
+                name="email"
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                    <View className="flex-col gap-2.5 w-full">
+                        <Text
+                            className={`text-xl font-sans-regular ${errors.email ? 'text-red-500' : 'text-white'}`}
+                        >
+                            Email
+                        </Text>
+
+                        <TextField
+                            label="Email"
+                            placeholder="Enter your email"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            autoComplete="email"
+                            autoCorrect={false}
+                            onChangeText={onChange}
+                            onBlur={onBlur}
+                            value={value}
+                        />
+                        {errors.email && (
+                            <Text className="text-red-500 text-xl font-sans-regular">
+                                {errors.email.message}
+                            </Text>
+                        )}
+                    </View>
+                )}
+            />
+
+            <Controller
+                name="password"
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                    <View className="flex-col gap-2.5 w-full">
+                        <Text
+                            className={`text-xl font-sans-regular ${errors.password ? 'text-red-500' : 'text-white'}`}
+                        >
+                            Password
+                        </Text>
+                        <TextField
+                            label="Password"
+                            placeholder="Enter your password"
+                            keyboardType="default"
+                            autoCapitalize="none"
+                            autoComplete="password"
+                            secureTextEntry={true}
+                            autoCorrect={false}
+                            onChangeText={onChange}
+                            onBlur={onBlur}
+                            value={value}
+                        />
+
+                        {errors.password && (
+                            <Text className="text-red-500 text-xl font-sans-regular">
+                                {errors.password.message}
+                            </Text>
+                        )}
+                    </View>
+                )}
+            />
+            <CustomButton
+                title="Log in"
+                onPress={handleSubmit(onSubmit)}
+                className="w-full "
+                loader={loader}
+            />
+
+            <View className="flex-row gap-2.5 items-center mt-5">
+                <Link
+                    href="/(login)/register"
+                    className="text-accent text-xl font-sans-regular underline"
+                >
+                    Register here
+                </Link>
+            </View>
+
+            <Link
+                href="/(login)/forgot-password"
+                className="text-accent mt-4 text-xl font-sans-regular underline"
+            >
+                Forgot password?
+            </Link>
+        </View>
+    );
+};
+
+export default LoginIndex;
