@@ -47,6 +47,7 @@ export const fetchMovieDetails = async ({ id }: { id: string }) => {
     return data;
 };
 
+// all about movies
 export const saveMovie = async ({ id, userId }: { id: string; userId: string }) => {
     const { error } = await supabase.rpc('insert_save_movie', {
         input_movie_id: id,
@@ -84,4 +85,8 @@ export const unsaveMovie = async ({ id, userId }: { id: string; userId: string }
     }
 
     return { errorMsg: null };
+};
+
+export const getSavedMovies = async ({ userId }: { userId: string }) => {
+    //TODO: QUERY SAVED MOVIES BY USER ID
 };
