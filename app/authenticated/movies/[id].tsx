@@ -127,7 +127,7 @@ const MovieDetails = () => {
                         </View>
 
                         <View className="flex-col items-start justify-center mt-5 px-5">
-                            <View className="flex-row items-center gap-4">
+                            <View className="flex-row flex-wrap items-center gap-4">
                                 <Text className="text-white font-sans-bold text-2xl">
                                     {movieDetails?.title}
                                 </Text>
@@ -135,18 +135,27 @@ const MovieDetails = () => {
                                     <CustomButton
                                         title="Unsave"
                                         onPress={handleUnsaveMovie}
-                                        className="h-10 bg-red-500"
+                                        className="h-10 bg-transparent min-w-24 flex-row items-center gap-2 border border-gray-300"
                                         loader={unsaving}
-                                        textClassName="text-sm font-sans-regular text-white"
-                                    />
+                                    >
+                                        <Text className="text-sm font-sans-regular text-gray-300">
+                                            Unsave
+                                        </Text>
+
+                                        <Image source={icons.save} className="size-4" />
+                                    </CustomButton>
                                 ) : (
                                     <CustomButton
                                         title="Save"
                                         onPress={handleSaveMovie}
-                                        className="h-10"
+                                        className="h-10 bg-transparent min-w-24 flex-row items-center gap-2 border border-gray-300"
                                         loader={saving}
-                                        textClassName="text-sm font-sans-regular"
-                                    />
+                                    >
+                                        <Text className="text-sm font-sans-regular text-gray-300">
+                                            Save
+                                        </Text>
+                                        <Image source={icons.save} className="size-4" />
+                                    </CustomButton>
                                 )}
                             </View>
 

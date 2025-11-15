@@ -7,9 +7,17 @@ interface CustomButtonProps extends TouchableOpacityProps {
     title: string;
     className?: string;
     textClassName?: string;
+    children?: React.ReactNode;
 }
 
-const CustomButton = ({ loader, title, className, textClassName, ...props }: CustomButtonProps) => {
+const CustomButton = ({
+    loader,
+    title,
+    className,
+    textClassName,
+    children,
+    ...props
+}: CustomButtonProps) => {
     return (
         <TouchableOpacity
             disabled={loader}
@@ -22,6 +30,8 @@ const CustomButton = ({ loader, title, className, textClassName, ...props }: Cus
         >
             {loader ? (
                 <ActivityIndicator size="small" color="#fff" />
+            ) : children ? (
+                children
             ) : (
                 <Text
                     className={cn(

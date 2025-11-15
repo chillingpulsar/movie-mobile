@@ -1,6 +1,6 @@
 import CustomButton from '@/components/custom-button';
 import { icons } from '@/constants/icons';
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, Image, Text, View } from 'react-native';
 
 const SavedMovieCard = ({
@@ -17,6 +17,12 @@ const SavedMovieCard = ({
     release_date: string;
 }) => {
     //TODO: ADD HANDLE UNSAVE MOVIE FUNCTION
+
+    let [unsaving, setUnsaving] = useState(false);
+
+    const handleUnsaveMovie = async () => {
+        console.log('Unsave movie');
+    };
 
     return (
         <View className="flex items-start h-40 gap-4 flex-row p-4 bg-secondary/50 rounded-lg  w-full">
@@ -41,10 +47,14 @@ const SavedMovieCard = ({
 
                 <CustomButton
                     title="Unsave"
-                    onPress={() => {}}
-                    className="h-10 bg-red-500 mt-auto ml-auto"
-                    textClassName="text-sm font-sans-regular text-white"
-                />
+                    onPress={handleUnsaveMovie}
+                    className="h-10 bg-transparent ml-auto min-w-24 flex-row items-center gap-2 border border-gray-300"
+                    loader={unsaving}
+                >
+                    <Text className="text-sm font-sans-regular text-gray-300">Unsave</Text>
+
+                    <Image source={icons.save} className="size-4" />
+                </CustomButton>
             </View>
         </View>
     );
