@@ -44,3 +44,7 @@ export const fetchMovieDetails = async ({ id }: { id: string }) => {
 
     return data;
 };
+
+export const saveMovie = async ({ id, userId }: { id: string; userId: string }) => {
+    //TODO: Implement save movie
+};

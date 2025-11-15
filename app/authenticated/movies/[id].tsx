@@ -4,7 +4,7 @@ import { fetchMovieDetails } from '@/services/api';
 import useFetch from '@/services/use-fetch';
 import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, Image, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 interface MovieInfoProps {
     label: string;
@@ -28,6 +28,10 @@ const MovieDetails = () => {
         fetchMovieDetails({ id: id as string })
     );
 
+    const handleSaveMovie = async () => {
+        console.log(id);
+    };
+
     return (
         <View className="bg-primary flex-1">
             {isLoading ? (
@@ -48,9 +52,21 @@ const MovieDetails = () => {
                         </View>
 
                         <View className="flex-col items-start justify-center mt-5 px-5">
-                            <Text className="text-white font-sans-bold text-2xl">
-                                {movieDetails?.title}
-                            </Text>
+                            <View className="flex-row items-center gap-4">
+                                <Text className="text-white font-sans-bold text-2xl">
+                                    {movieDetails?.title}
+                                </Text>
+
+                                <TouchableOpacity
+                                    onPress={handleSaveMovie}
+                                    className="px-2 w-20 py-1 rounded-sm bg-accent"
+                                >
+                                    <Text className="text-white text-center font-sans-regular text-base">
+                                        Save
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+
                             <View className="flex-row items-center gap-x-1 mt-2">
                                 <Text className="text-light-200 font-sans-regular text-base">
                                     {movieDetails?.release_date.split('-')[0]}

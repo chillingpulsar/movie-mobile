@@ -28,7 +28,60 @@ export type Database = {
     };
     public: {
         Tables: {
-            [_ in never]: never;
+            movie_ratings: {
+                Row: {
+                    created_at: string;
+                    deleted_at: string | null;
+                    id: string;
+                    movie_id: string;
+                    rating: number;
+                    updated_at: string | null;
+                };
+                Insert: {
+                    created_at?: string;
+                    deleted_at?: string | null;
+                    id?: string;
+                    movie_id: string;
+                    rating: number;
+                    updated_at?: string | null;
+                };
+                Update: {
+                    created_at?: string;
+                    deleted_at?: string | null;
+                    id?: string;
+                    movie_id?: string;
+                    rating?: number;
+                    updated_at?: string | null;
+                };
+                Relationships: [];
+            };
+            saved_movies: {
+                Row: {
+                    created_at: string;
+                    deleted_at: string | null;
+                    id: string;
+                    movie_id: string;
+                    updated_at: string | null;
+                    user_id: string;
+                };
+                Insert: {
+                    created_at?: string;
+                    deleted_at?: string | null;
+                    id?: string;
+                    movie_id: string;
+                    updated_at?: string | null;
+                    user_id: string;
+                };
+                Update: {
+                    created_at?: string;
+                    deleted_at?: string | null;
+                    id?: string;
+                    movie_id?: string;
+                    updated_at?: string | null;
+                    user_id?: string;
+                };
+                Relationships: [];
+            };
         };
         Views: {
             [_ in never]: never;
