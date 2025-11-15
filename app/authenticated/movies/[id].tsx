@@ -61,13 +61,18 @@ const MovieDetails = () => {
     const handleSaveMovie = async () => {
         if (!user) return;
 
-        console.log(user.id);
-
         setSaving(true);
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        const { errorMsg } = await saveMovie({ id: id as string, userId: user.id });
+        const { errorMsg } = await saveMovie({
+            id: id as string,
+            userId: user.id,
+            title: movieDetails?.title ?? '',
+            poster_path: movieDetails?.poster_path ?? '',
+            vote_average: Math.round(movieDetails?.vote_average ?? 0),
+            release_date: movieDetails?.release_date ?? ''
+        });
 
         if (errorMsg) {
             Alert.alert('Error', errorMsg, [{ text: 'OK', onPress: () => setSaving(false) }]);
@@ -87,8 +92,6 @@ const MovieDetails = () => {
 
     useEffect(() => {
         if (!user || !id) return;
-
-        console.log(id, user.id);
 
         let cancelled = false;
 

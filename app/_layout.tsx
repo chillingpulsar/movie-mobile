@@ -44,8 +44,6 @@ export default function RootLayout() {
 
         const inAuthGroup = segments[0] === 'authenticated';
 
-        console.log('isAuthenticated', isAuthenticated);
-
         if (!isAuthenticated && inAuthGroup) {
             // User is not authenticated but trying to access protected route
 

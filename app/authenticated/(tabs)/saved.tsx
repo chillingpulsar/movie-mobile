@@ -1,32 +1,66 @@
 import CustomButton from '@/components/custom-button';
 import { icons } from '@/constants/icons';
-import React, { useState } from 'react';
-import { FlatList, Image, Text, View } from 'react-native';
+import type { Tables } from '@/lib/supabase.types';
+import { getSavedMovies, unsaveMovie } from '@/services/api';
+import { useAuth } from '@/services/use-auth';
+import { Link } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, FlatList, Image, RefreshControl, Text, View } from 'react-native';
 
 const SavedMovieCard = ({
     id,
+    movie_id,
     title,
     poster_path,
     vote_average,
-    release_date
+    release_date,
+    userId,
+    onUnsave
 }: {
-    id: number;
+    id: string;
+    movie_id: string;
     title: string;
     poster_path: string;
     vote_average: number;
     release_date: string;
+    userId: string;
+    onUnsave: (savedMovieId: string) => void;
 }) => {
-    //TODO: ADD HANDLE UNSAVE MOVIE FUNCTION
-
     let [unsaving, setUnsaving] = useState(false);
 
     const handleUnsaveMovie = async () => {
-        console.log('Unsave movie');
+        setUnsaving(true);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const { errorMsg } = await unsaveMovie({ id: movie_id, userId });
+
+        if (errorMsg) {
+            Alert.alert('Error', errorMsg, [{ text: 'OK', onPress: () => setUnsaving(false) }]);
+            return;
+        }
+
+        Alert.alert('Success', 'Movie unsaved successfully', [
+            {
+                text: 'OK',
+                onPress: () => {
+                    setUnsaving(false);
+                    onUnsave(id);
+                }
+            }
+        ]);
     };
 
     return (
         <View className="flex items-start h-40 gap-4 flex-row p-4 bg-secondary/50 rounded-lg  w-full">
-            <View className="size-32 bg-green-500 rounded-lg"></View>
+            <View>
+                <Image
+                    source={{
+                        uri: `https://image.tmdb.org/t/p/w500${poster_path}`
+                    }}
+                    resizeMode="cover"
+                    className="size-32 rounded-lg"
+                />
+            </View>
             <View className="flex-1  h-full">
                 <View className="">
                     <Text className="text-xl font-sans-bold text-white mt-2" numberOfLines={1}>
@@ -61,54 +95,68 @@ const SavedMovieCard = ({
 };
 
 const Saved = () => {
+    const { user } = useAuth();
+
+    let [savedMovies, setSavedMovies] = useState<Tables<'saved_movies'>[] | null>(null);
+    let [refreshing, setRefreshing] = useState(false);
+
+    const fetchSavedMovies = useCallback(async () => {
+        if (!user) return;
+
+        const res = await getSavedMovies({ userId: user.id });
+        setSavedMovies(res.data);
+    }, [user]);
+
+    useEffect(() => {
+        fetchSavedMovies();
+    }, [fetchSavedMovies]);
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await fetchSavedMovies();
+        setRefreshing(false);
+    };
+
+    const handleUnsave = (savedMovieId: string) => {
+        setSavedMovies((prev) => prev?.filter((movie) => movie.id !== savedMovieId) ?? null);
+    };
+
     return (
         <View className="bg-primary flex-1">
             <FlatList
-                data={[
-                    {
-                        id: 1,
-                        title: 'Movie 1',
-                        poster_path: 'https://via.placeholder.com/150',
-                        vote_average: 7.5,
-                        release_date: '2021-01-01'
-                    },
-                    {
-                        id: 2,
-                        title: 'Movie 1',
-                        poster_path: 'https://via.placeholder.com/150',
-                        vote_average: 7.5,
-                        release_date: '2021-01-01'
-                    },
-                    {
-                        id: 3,
-                        title: 'Movie 1',
-                        poster_path: 'https://via.placeholder.com/150',
-                        vote_average: 7.5,
-                        release_date: '2021-01-01'
-                    },
-                    {
-                        id: 4,
-                        title: 'Movie 1',
-                        poster_path: 'https://via.placeholder.com/150',
-                        vote_average: 7.5,
-                        release_date: '2021-01-01'
-                    },
-                    {
-                        id: 5,
-                        title: 'Movie 1',
-                        poster_path: 'https://via.placeholder.com/150',
-                        vote_average: 7.5,
-                        release_date: '2021-01-01'
-                    }
-                ]}
-                renderItem={({ item }) => <SavedMovieCard {...item} />}
+                data={savedMovies}
+                renderItem={({ item }) => (
+                    <SavedMovieCard userId={user?.id ?? ''} onUnsave={handleUnsave} {...item} />
+                )}
                 keyExtractor={(item) => item.id.toString()}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor="#FFF"
+                        colors={['#FFF']}
+                        progressViewOffset={100}
+                        title="Refreshing... please wait"
+                        titleColor="#FFF"
+                    />
+                }
                 contentContainerStyle={{
                     paddingHorizontal: 20,
                     paddingBottom: 100,
                     paddingTop: 100,
                     gap: 20
                 }}
+                ListEmptyComponent={
+                    <View className="flex-1 flex-col gap-4 items-center justify-center">
+                        <Text className="text-white text-base font-sans-regular text-center">
+                            No saved movies yet
+                        </Text>
+
+                        <Link href="/authenticated/(tabs)" className="text-accent underline">
+                            <Text>Save a movie now!</Text>
+                        </Link>
+                    </View>
+                }
                 showsVerticalScrollIndicator={false}
                 removeClippedSubviews={true}
                 maxToRenderPerBatch={10}

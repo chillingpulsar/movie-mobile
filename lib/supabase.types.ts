@@ -61,24 +61,36 @@ export type Database = {
                     deleted_at: string | null;
                     id: string;
                     movie_id: string;
+                    poster_path: string;
+                    release_date: string;
+                    title: string;
                     updated_at: string | null;
                     user_id: string;
+                    vote_average: number;
                 };
                 Insert: {
                     created_at?: string;
                     deleted_at?: string | null;
                     id?: string;
                     movie_id: string;
+                    poster_path: string;
+                    release_date: string;
+                    title: string;
                     updated_at?: string | null;
                     user_id: string;
+                    vote_average: number;
                 };
                 Update: {
                     created_at?: string;
                     deleted_at?: string | null;
                     id?: string;
                     movie_id?: string;
+                    poster_path?: string;
+                    release_date?: string;
+                    title?: string;
                     updated_at?: string | null;
                     user_id?: string;
+                    vote_average?: number;
                 };
                 Relationships: [];
             };
@@ -92,7 +104,14 @@ export type Database = {
                 Returns: boolean;
             };
             insert_save_movie: {
-                Args: { input_movie_id: string; input_user_id: string };
+                Args: {
+                    input_movie_id: string;
+                    input_poster_path: string;
+                    input_release_date: string;
+                    input_title: string;
+                    input_user_id: string;
+                    input_vote_average: number;
+                };
                 Returns: undefined;
             };
         };

@@ -48,10 +48,28 @@ export const fetchMovieDetails = async ({ id }: { id: string }) => {
 };
 
 // all about movies
-export const saveMovie = async ({ id, userId }: { id: string; userId: string }) => {
+export const saveMovie = async ({
+    id,
+    userId,
+    title,
+    poster_path,
+    vote_average,
+    release_date
+}: {
+    id: string;
+    userId: string;
+    title: string;
+    poster_path: string;
+    vote_average: number;
+    release_date: string;
+}) => {
     const { error } = await supabase.rpc('insert_save_movie', {
         input_movie_id: id,
-        input_user_id: userId
+        input_user_id: userId,
+        input_title: title,
+        input_poster_path: poster_path,
+        input_vote_average: vote_average,
+        input_release_date: release_date
     });
 
     if (error) {
@@ -88,5 +106,15 @@ export const unsaveMovie = async ({ id, userId }: { id: string; userId: string }
 };
 
 export const getSavedMovies = async ({ userId }: { userId: string }) => {
-    //TODO: QUERY SAVED MOVIES BY USER ID
+    //add 2 seconds delay
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    const { data, error } = await supabase.from('saved_movies').select('*').eq('user_id', userId);
+
+    if (error) {
+        console.log(error.message);
+        return { errorMsg: error.message, data: null };
+    }
+
+    return { errorMsg: null, data };
 };
