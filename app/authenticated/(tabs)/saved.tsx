@@ -5,7 +5,15 @@ import { getSavedMovies, unsaveMovie } from '@/services/api';
 import { useAuth } from '@/services/use-auth';
 import { Link } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, FlatList, Image, RefreshControl, Text, View } from 'react-native';
+import {
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    Image,
+    RefreshControl,
+    Text,
+    View
+} from 'react-native';
 
 const SavedMovieCard = ({
     id,
@@ -123,46 +131,45 @@ const Saved = () => {
 
     return (
         <View className="bg-primary flex-1">
-            <FlatList
-                data={savedMovies}
-                renderItem={({ item }) => (
-                    <SavedMovieCard userId={user?.id ?? ''} onUnsave={handleUnsave} {...item} />
-                )}
-                keyExtractor={(item) => item.id.toString()}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        tintColor="#FFF"
-                        colors={['#FFF']}
-                        progressViewOffset={100}
-                        title="Refreshing... please wait"
-                        titleColor="#FFF"
-                    />
-                }
-                contentContainerStyle={{
-                    paddingHorizontal: 20,
-                    paddingBottom: 100,
-                    paddingTop: 100,
-                    gap: 20
-                }}
-                ListEmptyComponent={
-                    <View className="flex-1 flex-col gap-4 items-center justify-center">
-                        <Text className="text-white text-base font-sans-regular text-center">
-                            No saved movies yet
-                        </Text>
+            {refreshing ? (
+                <View className="flex-1 items-center flex-col gap-4 justify-center">
+                    <ActivityIndicator size="large" color="#FFF" />
+                    <Text className="text-white text-xl">Refreshing...</Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={savedMovies}
+                    renderItem={({ item }) => (
+                        <SavedMovieCard userId={user?.id ?? ''} onUnsave={handleUnsave} {...item} />
+                    )}
+                    keyExtractor={(item) => item.id.toString()}
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
+                    contentContainerStyle={{
+                        paddingHorizontal: 20,
+                        paddingBottom: 100,
+                        paddingTop: 100,
+                        gap: 20
+                    }}
+                    ListEmptyComponent={
+                        <View className="flex-1 flex-col gap-4 items-center justify-center">
+                            <Text className="text-white text-base font-sans-regular text-center">
+                                No saved movies yet
+                            </Text>
 
-                        <Link href="/authenticated/(tabs)" className="text-accent underline">
-                            <Text>Save a movie now!</Text>
-                        </Link>
-                    </View>
-                }
-                showsVerticalScrollIndicator={false}
-                removeClippedSubviews={true}
-                maxToRenderPerBatch={10}
-                windowSize={5}
-                initialNumToRender={6}
-            />
+                            <Link href="/authenticated/(tabs)" className="text-accent underline">
+                                <Text>Save a movie now!</Text>
+                            </Link>
+                        </View>
+                    }
+                    showsVerticalScrollIndicator={false}
+                    removeClippedSubviews={true}
+                    maxToRenderPerBatch={10}
+                    windowSize={5}
+                    initialNumToRender={6}
+                />
+            )}
         </View>
     );
 };
