@@ -1,3 +1,5 @@
+import { supabase } from '@/lib/supabase';
+
 export const TMDB_CONFIG = {
     BASE_URL: 'https://api.themoviedb.org/3',
     API_KEY: process.env.EXPO_PUBLIC_MOVIE_API_KEY,
@@ -46,5 +48,40 @@ export const fetchMovieDetails = async ({ id }: { id: string }) => {
 };
 
 export const saveMovie = async ({ id, userId }: { id: string; userId: string }) => {
-    //TODO: Implement save movie
+    const { error } = await supabase.rpc('insert_save_movie', {
+        input_movie_id: id,
+        input_user_id: userId
+    });
+
+    if (error) {
+        return { errorMsg: error.message };
+    }
+
+    return { errorMsg: null };
+};
+
+export const checkIfMovieSaved = async ({ id, userId }: { id: string; userId: string }) => {
+    const { data, error } = await supabase.rpc('check_if_movie_saved', {
+        input_movie_id: id,
+        input_user_id: userId
+    });
+
+    if (error) {
+        return { errorMsg: error.message, isSaved: false };
+    }
+
+    return { errorMsg: null, isSaved: data };
+};
+
+export const unsaveMovie = async ({ id, userId }: { id: string; userId: string }) => {
+    const { error } = await supabase
+        .from('saved_movies')
+        .delete()
+        .match({ movie_id: id, user_id: userId });
+
+    if (error) {
+        return { errorMsg: error.message };
+    }
+
+    return { errorMsg: null };
 };

@@ -87,7 +87,14 @@ export type Database = {
             [_ in never]: never;
         };
         Functions: {
-            [_ in never]: never;
+            check_if_movie_saved: {
+                Args: { input_movie_id: string; input_user_id: string };
+                Returns: boolean;
+            };
+            insert_save_movie: {
+                Args: { input_movie_id: string; input_user_id: string };
+                Returns: undefined;
+            };
         };
         Enums: {
             [_ in never]: never;

@@ -1,10 +1,11 @@
 import CustomButton from '@/components/custom-button';
 import { icons } from '@/constants/icons';
-import { fetchMovieDetails } from '@/services/api';
+import { checkIfMovieSaved, fetchMovieDetails, saveMovie, unsaveMovie } from '@/services/api';
+import { useAuth } from '@/services/use-auth';
 import useFetch from '@/services/use-fetch';
 import { router, useLocalSearchParams } from 'expo-router';
-import React from 'react';
-import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Image, ScrollView, Text, View } from 'react-native';
 
 interface MovieInfoProps {
     label: string;
@@ -24,13 +25,87 @@ const MovieInfo = ({ label, value }: MovieInfoProps) => {
 
 const MovieDetails = () => {
     const { id } = useLocalSearchParams();
+    const { user } = useAuth();
+
     const { data: movieDetails, isLoading } = useFetch(() =>
         fetchMovieDetails({ id: id as string })
     );
 
-    const handleSaveMovie = async () => {
-        console.log(id);
+    let [unsaving, setUnsaving] = useState(false);
+
+    const handleUnsaveMovie = async () => {
+        if (!user) return;
+
+        setUnsaving(true);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const { errorMsg } = await unsaveMovie({ id: id as string, userId: user.id });
+
+        if (errorMsg) {
+            Alert.alert('Error', errorMsg, [{ text: 'OK', onPress: () => setUnsaving(false) }]);
+        }
+        Alert.alert('Success', 'Movie unsaved successfully', [
+            {
+                text: 'OK',
+                onPress: () => {
+                    setUnsaving(false);
+                    setIsSaved(false);
+                }
+            }
+        ]);
     };
+
+    let [saving, setSaving] = useState(false);
+    let [isSaved, setIsSaved] = useState(false);
+
+    const handleSaveMovie = async () => {
+        if (!user) return;
+
+        console.log(user.id);
+
+        setSaving(true);
+
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const { errorMsg } = await saveMovie({ id: id as string, userId: user.id });
+
+        if (errorMsg) {
+            Alert.alert('Error', errorMsg, [{ text: 'OK', onPress: () => setSaving(false) }]);
+            return;
+        }
+
+        Alert.alert('Success', 'Movie saved successfully', [
+            {
+                text: 'OK',
+                onPress: () => {
+                    setSaving(false);
+                    setIsSaved(true);
+                }
+            }
+        ]);
+    };
+
+    useEffect(() => {
+        if (!user || !id) return;
+
+        console.log(id, user.id);
+
+        let cancelled = false;
+
+        checkIfMovieSaved({ id: id as string, userId: user.id }).then((res) => {
+            if (cancelled) return;
+
+            if (res.errorMsg) {
+                setIsSaved(false);
+                return;
+            }
+            setIsSaved(res.isSaved);
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [user, id]);
 
     return (
         <View className="bg-primary flex-1">
@@ -56,15 +131,23 @@ const MovieDetails = () => {
                                 <Text className="text-white font-sans-bold text-2xl">
                                     {movieDetails?.title}
                                 </Text>
-
-                                <TouchableOpacity
-                                    onPress={handleSaveMovie}
-                                    className="px-2 w-20 py-1 rounded-sm bg-accent"
-                                >
-                                    <Text className="text-white text-center font-sans-regular text-base">
-                                        Save
-                                    </Text>
-                                </TouchableOpacity>
+                                {isSaved ? (
+                                    <CustomButton
+                                        title="Unsave"
+                                        onPress={handleUnsaveMovie}
+                                        className="h-10 bg-red-500"
+                                        loader={unsaving}
+                                        textClassName="text-sm font-sans-regular text-white"
+                                    />
+                                ) : (
+                                    <CustomButton
+                                        title="Save"
+                                        onPress={handleSaveMovie}
+                                        className="h-10"
+                                        loader={saving}
+                                        textClassName="text-sm font-sans-regular"
+                                    />
+                                )}
                             </View>
 
                             <View className="flex-row items-center gap-x-1 mt-2">
